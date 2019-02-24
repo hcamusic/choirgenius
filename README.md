@@ -8,10 +8,10 @@
 
 Run the updating script.
 ```js
-const ChoirGenius = require('./src/ChoirGenius');
+const ChoirGenius = require('choirgenius');
 
 // Instantiate a new choir genius instance with the url of your site
-const choirGenius = new ChoirGenius('https://your-choir-genius-url.com');
+const choirGenius = new ChoirGenius('https://hcamusic.org');
 
 const username = process.env.CHOIR_GENIUS_USERNAME;
 const password = process.env.CHOIR_GENIUS_PASSWORD;
