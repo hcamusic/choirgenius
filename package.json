@@ -1,0 +1,22 @@
+{
+  "name": "choirgenius",
+  "version": "1.0.0",
+  "description": "Choir Genius / Groupanizer 'API'",
+  "main": "index.js",
+  "scripts": {
+    "prettier": "prettier \"**/*.{js,json,css,md}\" --write"
+  },
+  "author": "Michael Barlock <barlockm@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "csvjson": "^5.1.0",
+    "lodash": "^4.17.11",
+    "p-do-whilst": "^0.1.0",
+    "qs": "^6.6.0",
+    "tough-cookie": "^3.0.1"
+  },
+  "devDependencies": {
+    "prettier": "^1.16.4"
+  }
+}
