@@ -76,6 +76,29 @@ class ChoirGenius {
       return user;
     });
   }
+
+  async getEvents(start, end) {
+    const { data } = await this._axios.get('/g/calendar/events', {
+      params: {
+        start,
+        end
+      }
+    });
+
+    return data;
+  }
+
+  async emailEvent(options) {
+    // subject: Another Test
+    // message: Testy Test
+    // sendto: none
+    // reply-to: reply-to-me
+    // include-links: 1
+    // op: Send
+    // form_build_id: form-7hPI_JTIM-rQCEKR35NImmzQAeId_lQCoP6GiIYdm7E
+    // form_token: lKcAgXIAXOkGJuJ1vGhmoQf4W59352Xav6clC3DHe1I
+    // form_id: gb_attendance_message_form
+  }
 }
 
 module.exports = ChoirGenius;
