@@ -1,6 +1,7 @@
+const url = require('url');
 const axios = require('axios');
+const escapeStringRegexp = require('escape-string-regexp');
 const qs = require('qs');
-const pDoWhilst = require('p-do-whilst');
 const { Cookie } = require('tough-cookie');
 const csvjson = require('csvjson');
 const _ = require('lodash');
@@ -34,30 +35,38 @@ class ChoirGenius {
   }
 
   async getMembers() {
-    let status;
+    const csvPath = escapeStringRegexp(
+      url.resolve(this._baseURL, '/system/files/export/')
+    );
+    const csvPattern = new RegExp(`${csvPath}.*\.csv`);
 
-    await pDoWhilst(
-      async () => {
-        const result = await this._axios({
-          method: 'post',
-          url: '/gtable/member_list/action',
-          headers: {
-            'x-requested-with': 'XMLHttpRequest'
-          },
-          withCredentials: true,
-          maxRedirects: 0,
-          data: qs.stringify({
-            gtable_action: 'export_selected',
-            'gtable_ids[]': 'select_all'
-          })
-        });
+    const exportStartRedirect = await this._axios.get('/g/admin/export/users', {
+      validateStatus: status => status === 302,
+      maxRedirects: 0
+    });
 
-        status = result.data.status;
-      },
-      () => status !== 'done'
+    const batchActionStart = exportStartRedirect.headers.location;
+    const batchActionDo = batchActionStart.replace('op=start', 'op=do');
+    const batchActionFinished = batchActionStart.replace(
+      'op=start',
+      'op=finished'
     );
 
-    const exportResult = await this._axios.get('/g/members/export');
+    await this._axios.get(batchActionStart);
+    await this._axios.post(batchActionStart);
+    await this._axios.get(batchActionDo);
+    const exportDoneRedirect = await this._axios.get(batchActionFinished, {
+      validateStatus: status => status === 302,
+      maxRedirects: 0
+    });
+
+    const finishedPage = await this._axios.get(
+      exportDoneRedirect.headers.location
+    );
+
+    const [csvDownload] = finishedPage.data.match(csvPattern);
+
+    const exportResult = await this._axios.get(csvDownload);
     const csvData = await csvjson.toObject(exportResult.data, {
       quote: '"'
     });

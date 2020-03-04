@@ -7,6 +7,7 @@
 ## Usage
 
 Run the updating script.
+
 ```js
 const ChoirGenius = require('choirgenius');
 
